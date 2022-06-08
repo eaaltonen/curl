@@ -47,6 +47,8 @@ include(CheckCCompilerFlag)
 
 project(CURL C)
 
+set(CMAKE_C_STANDARD 11)
+
 file(STRINGS ${CURL_SOURCE_DIR}/include/curl/curlver.h CURL_VERSION_H_CONTENTS REGEX "#define LIBCURL_VERSION( |_NUM )")
 string(REGEX MATCH "#define LIBCURL_VERSION \"[^\"]*"
   CURL_VERSION ${CURL_VERSION_H_CONTENTS})
@@ -1052,6 +1054,10 @@ if(HAVE_SIZEOF_LONG_LONG)
   set(HAVE_LONGLONG 1)
   set(HAVE_LL 1)
 endif()
+check_c_source_compiles("_Atomic int counter = 0; void main() {}" HAVE_ATOMIC)
+if (HAVE_ATOMIC)
+  add_definitions(-DHAVE_ATOMIC)
+endif ()
 
 find_file(RANDOM_FILE urandom /dev)
 mark_as_advanced(RANDOM_FILE)
